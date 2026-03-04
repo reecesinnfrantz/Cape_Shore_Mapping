@@ -7,6 +7,7 @@ format:
     toc: true
     code-fold: false
 ---
+binder:https://hub.bids.mybinder.org/user/reecesinnfrantz-e_shore_mapping-9uzneqjc/lab
 
 ## 1. Project Objective
 
@@ -123,4 +124,6 @@ GPS Bounce: Phone GPS can be a bit wonky near high cliffs, placing the point a f
 Map Detail: The background map (OpenStreetMap), it might miss tiny rocky outcrops or tide pools that the animals are actually sitting on.
 
 Overall, using these animals as "proxies" worked well. Showing that where the map says there is rock or sand, the biological distribution seems to agree. 
+
+https://hub.bids.mybinder.org/user/reecesinnfrantz-e_shore_mapping-9uzneqjc/lab
 
