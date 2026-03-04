@@ -1,0 +1,6 @@
+install.packages ("tidyverse")  
+install.packages ("sf")         
+install.packages ("ggspatial")  
+install.packages ("rinat")      
+install.packages ("mapview")    
+install.packages ("leafpop")    
