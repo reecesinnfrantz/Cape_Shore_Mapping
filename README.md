@@ -3,6 +3,8 @@
 **Author:** Reece Sinn Frantz\
 **Date:** March 2026
 
+[![Binder]([https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/reecesinnfrantz/Cape_Shore_Mapping/HEAD)](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/reecesinnfrantz/Cape_Shore_Mapping/HEAD))
+
 ## 1. Project Overview
 
 In this project, I am using biological data to check if official shore-type maps for the Cape Peninsula are accurate. I chose two species to act as "proxies" for different habitats: **Rocky Shores:** Validated using *Scutellastra granularis* (Limpets). **Sandy Shores:** Validated using *Bullia rhodostoma* (Plough Snails).
