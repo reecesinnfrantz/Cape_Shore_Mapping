@@ -50,3 +50,4 @@ rsconnect/
 # Custom project data (Large files)
 data/*
 output/*
+rosm.cache/

@@ -10,7 +10,7 @@ format:
 
 ## 1. Project Objective
 
-This project uses biological proxies , *Scutellastra granularis* (Limpets) and *Bullia rhodostoma* (Plough Snails)—to validate shore-type classifications on the Cape Peninsula.
+This project uses biological proxies , *Scutellastra granularis* (Limpets) and *Bullia rhodostoma* (Plough Snails) to validate shore-type classifications on the Cape Peninsula.
 
 ## 2. Setup and Libraries
 
@@ -26,7 +26,7 @@ library(mapview)    # For interactive web maps
 library(leafpop)    # For advanced popups in interactive maps
 ```
 ## 3. Data Acquisition
-We are pulling observations directly from iNaturalist using the rinat package. We define our bounds so thatit just covers the Cape Peninsula.
+We are pulling observations directly from iNaturalist using the rinat package. We define our bounds so that it just covers the Cape Peninsula.
 
 ```{r}
 # Download Limpet data for Rocky shores
@@ -52,7 +52,7 @@ sandy_sf <- sandy_raw %>%
 ## 4. Static Map Visualisation
 This map provides a overview of our proxy distributions. We use OpenStreetMap tiles as a background and add elements like a scale bar and north arrow.
 
-```{r}
+```{r static_map, fig.width= 10, fig.height=8}
 
 slide_map <- ggplot() +
     annotation_map_tile(type = "osm", zoom = 11) +
