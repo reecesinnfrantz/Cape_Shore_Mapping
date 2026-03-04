@@ -1,0 +1,126 @@
+---
+title: "Fine-Scale Shore-Type Mapping: Cape Peninsula"
+author: "Reece Sinn Frantz"
+date: "March 2026"
+format: 
+  html:
+    toc: true
+    code-fold: false
+---
+
+## 1. Project Objective
+
+This project uses biological proxies , *Scutellastra granularis* (Limpets) and *Bullia rhodostoma* (Plough Snails)—to validate shore-type classifications on the Cape Peninsula.
+
+## 2. Setup and Libraries
+
+```{r setup, message=FALSE, warning=FALSE}
+
+# These are the R  tools we need
+
+library(tidyverse)  # For data cleaning and manipulation
+library(sf)         # For handling spatial data (Simple Features)
+library(ggspatial)  # For map elements like scale bars and north arrows
+library(rinat)      # To fetch data from iNaturalist
+library(mapview)    # For interactive web maps
+library(leafpop)    # For advanced popups in interactive maps
+```
+## 3. Data Acquisition
+We are pulling observations directly from iNaturalist using the rinat package. We define our bounds so thatit just covers the Cape Peninsula.
+
+```{r}
+# Download Limpet data for Rocky shores
+rocky_raw <- get_inat_obs(taxon_name = "Scutellastra granularis", 
+                         bounds = c(-34.4, 18.3, -33.9, 18.5), 
+                         maxresults = 100)
+
+# Download Snail data for Sandy shores
+sandy_raw <- get_inat_obs(taxon_name = "Bullia rhodostoma", 
+                         bounds = c(-34.4, 18.3, -33.9, 18.5), 
+                         maxresults = 100)
+
+# Make them into spatial points R can map
+rocky_sf <- rocky_raw %>% 
+  filter(quality_grade == "research") %>% 
+  st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
+
+sandy_sf <- sandy_raw %>% 
+  filter(quality_grade == "research") %>% 
+  st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
+```
+
+## 4. Static Map Visualisation
+This map provides a overview of our proxy distributions. We use OpenStreetMap tiles as a background and add elements like a scale bar and north arrow.
+
+```{r}
+
+slide_map <- ggplot() +
+    annotation_map_tile(type = "osm", zoom = 11) +
+    
+    # Layer 1: Ecosystems (Optional: uncomment once you have the file)
+    # geom_sf(data = ecosystems, alpha = 0.3, fill = "lightgreen") +
+    
+    # Layer 2: Proxies
+    geom_sf(data = rocky_sf, aes(color = "Rocky (Limpets)"), size = 3, alpha = 0.8) +
+    geom_sf(data = sandy_sf, aes(color = "Sandy (Plough Snails)"), size = 3, alpha = 0.8) +
+    
+    scale_color_manual(values = c("Rocky (Limpets)" = "#D55E00", 
+                                "Sandy (Plough Snails)" = "#0072B2"),
+                        name = "Shore Type Proxies") +
+    
+    annotation_north_arrow(location = "br", which_north = "true", 
+                           style = north_arrow_fancy_orienteering) +
+    annotation_scale(location = "bl") +
+    
+    labs(title = "Fine-Scale Shore Mapping: Cape Peninsula",
+         subtitle = "Validating shore-types with iNaturalist biological proxies",
+         caption = " Shore-type Standardisation") +
+    theme_minimal() +
+    coord_sf(expand = FALSE)
+
+print(slide_map)
+
+```
+## 5. Interactive Map 
+I created an interactive map. This allows us to click on individual points to view the original iNaturalist observation and the observer's details like their login and a url.
+
+```{r}
+# Create a combined object for the interactive map
+all_points <- bind_rows(
+  mutate(rocky_sf, Shore_Type = "Rocky (Limpets)"),
+  mutate(sandy_sf, Shore_Type = "Sandy (Plough Snails)")
+)
+
+# Generate the interactive mapview
+mapview(all_points, 
+        zcol = "Shore_Type", 
+        col.regions = c("#D55E00", "#0072B2"),
+        layer.name = "Species Observations",
+        popup = popupTable(all_points, 
+                           zcol = c("scientific_name", "user_login", "url")))
+```
+
+## 6. How I put this project together (Workflow)
+I followed steps :
+
+Step 1: Picking the right animals : I chose Limpets (they like rocks) and Plough Snails (they like sand) because they are living markers for different types of shorelines. 
+
+Step 2: Getting the data : I used the rinat package to "call" iNaturalist and download the latest sightings around the Cape Peninsula.
+
+Step 3: Cleaning things up : I made sure to only use "Research Grade" sightings and filtered out anything marked as "captive" so the data stays natural.
+
+Step 4: Making it spatial : I told R to treat the coordinates as a map (using the WGS84 system) so all the points would land in the right spot on the map.
+
+Step 5: Creating the maps : I made two versions: a static map for a quick look, and an interactive one.
+
+## 7. What did the maps show? (Conclusions)
+When you look at the maps, the patterns are clear. The Plough Snails mostly stay along the big sandy beaches like Muizenberg, while the Limpets are clustered around the rocky cliffs of the Point and the Atlantic side.
+
+Using the interactive map and noticed a few Limpets look like they are slightly "inland." This usually happens because:
+
+GPS Bounce: Phone GPS can be a bit wonky near high cliffs, placing the point a few meters off.
+
+Map Detail: The background map (OpenStreetMap), it might miss tiny rocky outcrops or tide pools that the animals are actually sitting on.
+
+Overall, using these animals as "proxies" worked well. Showing that where the map says there is rock or sand, the biological distribution seems to agree. 
+
